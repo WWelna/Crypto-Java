@@ -23,7 +23,7 @@
 package com.occultusterra.encryption.symmetric;
 
 public class SkipJack implements CryptoHandler {
-	int[] key;
+	int[] key = new int[10];
 	int[] ftable = {
 			0xa3,0xd7,0x09,0x83,0xf8,0x48,0xf6,0xf4,0xb3,0x21,0x15,0x78,0x99,0xb1,0xaf,0xf9,
 			0xe7,0x2d,0x4d,0x8a,0xce,0x4c,0xca,0x2e,0x52,0x95,0xd9,0x1e,0x4e,0x38,0x44,0x28,
@@ -44,6 +44,14 @@ public class SkipJack implements CryptoHandler {
 	int[][] key_lookup;
 	
 	public SkipJack(byte[] key) {
+		setKey(key);
+	}
+	
+	public SkipJack() {
+		
+	}
+	
+	@Override public void setKey(byte[] key) {
 		this.key = new int[10];
 		this.key[0] = key[0]&0xff; // Who Needs a for() loop?
 		this.key[1] = key[1]&0xff;
@@ -73,27 +81,27 @@ public class SkipJack implements CryptoHandler {
 		int g(int z, int w);
 	}
 	
-	@Override
-	public byte[] encrypt(byte[] block) {
+	@Override public byte[] encrypt(byte[] block) {
 		int w1=((block[0]&0xff)<<8)|(block[1]&0xff);
 		int w2=((block[2]&0xff)<<8)|(block[3]&0xff);
 		int w3=((block[4]&0xff)<<8)|(block[5]&0xff);
 		int w4=((block[6]&0xff)<<8)|(block[7]&0xff);
 		int k=0;
+		kewi g = (z,w) -> {
+			int g2,g3,g4,g5,g6;
+			
+			g2=(w&0xff);
+			g3=(ftable[g2^key_lookup[z][0]]^((w>>>8)));
+			g4=(ftable[g3^key_lookup[z][1]]^g2);
+			g5=(ftable[g4^key_lookup[z][2]]^g3);
+			g6=(ftable[g5^key_lookup[z][3]]^g4);
+
+			return (g5<<8)|(g6);
+		};
 		
 		for(int x=0; x<2; ++x) {
 			int tmp;
-			kewi g = (z,w) -> {
-				int g2,g3,g4,g5,g6;
-				
-				g2=(w&0xff);
-				g3=(ftable[g2^key_lookup[z][0]]^((w>>>8)));
-				g4=(ftable[g3^key_lookup[z][1]]^g2);
-				g5=(ftable[g4^key_lookup[z][2]]^g3);
-				g6=(ftable[g5^key_lookup[z][3]]^g4);
-
-				return (g5<<8)|(g6);
-			};
+			
 			for(int y=0; y<8; ++y) {
 				//System.out.format("%2d %04x%04x %04x%04x\n",k,w1,w2,w3,w4);
 				tmp=w4; w4=w3; w3=w2;
@@ -122,27 +130,27 @@ public class SkipJack implements CryptoHandler {
 		return block;
 	}
 	
-	@Override
-	public byte[] decrypt(byte[] block) {
+	@Override public byte[] decrypt(byte[] block) {
 		int w2=((block[0]&0xff)<<8)|(block[1]&0xff);
 		int w1=((block[2]&0xff)<<8)|(block[3]&0xff);
 		int w4=((block[4]&0xff)<<8)|(block[5]&0xff);
 		int w3=((block[6]&0xff)<<8)|(block[7]&0xff);
 		int k=31;
+		kewi g = (z,w) -> {
+			int g2,g3,g4,g5,g6;
+			
+			g2=((w>>>8));
+			g3=(ftable[g2^key_lookup[z][3]]^(w&0xff));
+			g4=(ftable[g3^key_lookup[z][2]]^g2);
+			g5=(ftable[g4^key_lookup[z][1]]^g3);
+			g6=(ftable[g5^key_lookup[z][0]]^g4);
+
+			return (g6<<8)|(g5);
+		};
 		
 		for(int x=0; x<2; ++x) {
 			int tmp;
-			kewi g = (z,w) -> {
-				int g2,g3,g4,g5,g6;
-				
-				g2=((w>>>8));
-				g3=(ftable[g2^key_lookup[z][3]]^(w&0xff));
-				g4=(ftable[g3^key_lookup[z][2]]^g2);
-				g5=(ftable[g4^key_lookup[z][1]]^g3);
-				g6=(ftable[g5^key_lookup[z][0]]^g4);
 
-				return (g6<<8)|(g5);
-			};
 			for(int y=0; y<8; ++y) {
 				//System.out.format("%2d %04x%04x %04x%04x\n",k,w1,w2,w3,w4);
 				tmp=w4; w4=w3; w3=w2;
@@ -171,13 +179,20 @@ public class SkipJack implements CryptoHandler {
 		return block;
 	}
 
-	@Override
-	public int getBlockSize() {
+	@Override public int getBlockSize() {
 		return 8;
 	}
 
-	@Override
-	public int getKeySize() {
+	@Override public int getKeySize() {
 		return 10;
+	}
+
+	@Override public int[] getBoxSizes() {
+		int[] ret = {0,0,0}; // We don't use any boxes
+		return ret;
+	}
+
+	@Override public void setBoxes(byte[][][] keybox) {
+		// We don't have any boxes to set
 	}
 }

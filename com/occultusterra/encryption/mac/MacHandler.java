@@ -20,27 +20,15 @@
   THE SOFTWARE.
 */
 
-package com.occultusterra.encryption.padding;
+package com.occultusterra.encryption.mac;
 
-import java.util.Arrays;
-
-public class PKCS7 implements PaddingHandler {
-	
-	public byte[] pad(byte[] in, int block) {
-		int howmuch = block-((in.length)%block);
-		int padding_resize = in.length+howmuch;
-		byte[] ret = Arrays.copyOf(in, padding_resize);
-		if(howmuch == 0)
-			ret[padding_resize-1] = 0x01;
-		else
-			for(int x=0, y=padding_resize-1; x<howmuch; ++x) {
-				ret[y-x] = (byte) ((howmuch)&0xff);
-			}
-		return ret;
-	}
-	
-	public byte[] unpad(byte[] in, int block) {
-		int padding_resize = in[in.length-1]&0xff;
-		return Arrays.copyOf(in, in.length-padding_resize);
-	}
+public interface MacHandler {
+	public void setKey(byte[] key);
+	public void setBoxes(byte[][][] keybox);
+	public void update(byte[] blocks);
+	public byte[] finish(byte[] blocks);
+	public byte[] finish();
+	public int getBlockSize();
+	public int getKeySize();
+	public int[] getBoxSizes();/* { Number of Boxes, Rows, Columns } */
 }

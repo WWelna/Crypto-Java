@@ -20,27 +20,28 @@
   THE SOFTWARE.
 */
 
-package com.occultusterra.encryption.padding;
+package com.occultusterra.encryption;
 
-import java.util.Arrays;
-
-public class PKCS7 implements PaddingHandler {
+public class Util {
 	
-	public byte[] pad(byte[] in, int block) {
-		int howmuch = block-((in.length)%block);
-		int padding_resize = in.length+howmuch;
-		byte[] ret = Arrays.copyOf(in, padding_resize);
-		if(howmuch == 0)
-			ret[padding_resize-1] = 0x01;
-		else
-			for(int x=0, y=padding_resize-1; x<howmuch; ++x) {
-				ret[y-x] = (byte) ((howmuch)&0xff);
+	public static void dump(String name, byte[] in) {
+		int x=0, bar_length = ((64-name.length())/2);
+		String bar_left, bar = "";
+		for(int y=0; y<bar_length; ++y)
+				bar += "-";
+		bar_left = bar;
+		if(bar_length%64 != 0)
+			bar_left += "-";
+		System.out.print("+"+bar_left+name+bar+"+\n|");
+		for(int y=0; y<in.length; ++y) {
+			System.out.format("%02x", in[y]); ++x;
+			if(x==32) {
+				System.out.print("|\n|");
+				x=0;
 			}
-		return ret;
+		} for(;x<32; ++x)
+			System.out.print("  ");
+		System.out.println("|\n+"+bar_left+name+bar+"+");
 	}
 	
-	public byte[] unpad(byte[] in, int block) {
-		int padding_resize = in[in.length-1]&0xff;
-		return Arrays.copyOf(in, in.length-padding_resize);
-	}
 }

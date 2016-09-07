@@ -23,8 +23,11 @@
 package com.occultusterra.encryption.symmetric;
 
 public interface CryptoHandler {
+	public void setKey(byte[] key);
+	public void setBoxes(byte[][][] keybox);
 	public byte[] encrypt(byte[] block);
 	public byte[] decrypt(byte[] block);
 	public int getBlockSize();
 	public int getKeySize();
+	public int[] getBoxSizes();/* { Number of Boxes, Rows, Columns } */
 }

@@ -22,25 +22,7 @@
 
 package com.occultusterra.encryption.padding;
 
-import java.util.Arrays;
-
-public class PKCS7 implements PaddingHandler {
-	
-	public byte[] pad(byte[] in, int block) {
-		int howmuch = block-((in.length)%block);
-		int padding_resize = in.length+howmuch;
-		byte[] ret = Arrays.copyOf(in, padding_resize);
-		if(howmuch == 0)
-			ret[padding_resize-1] = 0x01;
-		else
-			for(int x=0, y=padding_resize-1; x<howmuch; ++x) {
-				ret[y-x] = (byte) ((howmuch)&0xff);
-			}
-		return ret;
-	}
-	
-	public byte[] unpad(byte[] in, int block) {
-		int padding_resize = in[in.length-1]&0xff;
-		return Arrays.copyOf(in, in.length-padding_resize);
-	}
+public interface PaddingHandler {
+	public byte[] pad(byte[] in, int block);
+	public byte[] unpad(byte[] in, int block);
 }

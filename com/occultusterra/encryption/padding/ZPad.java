@@ -24,23 +24,23 @@ package com.occultusterra.encryption.padding;
 
 import java.util.Arrays;
 
-public class PKCS7 implements PaddingHandler {
-	
-	public byte[] pad(byte[] in, int block) {
+public class ZPad implements PaddingHandler {
+
+	@Override public byte[] pad(byte[] in, int block) {
 		int howmuch = block-((in.length)%block);
 		int padding_resize = in.length+howmuch;
-		byte[] ret = Arrays.copyOf(in, padding_resize);
-		if(howmuch == 0)
-			ret[padding_resize-1] = 0x01;
-		else
+		if(howmuch != 0) {
+			byte[] ret = Arrays.copyOf(in, padding_resize);
 			for(int x=0, y=padding_resize-1; x<howmuch; ++x) {
-				ret[y-x] = (byte) ((howmuch)&0xff);
+				ret[y-x] = 0x00;
 			}
-		return ret;
+			return ret;
+		} else
+			return in; // needed no padding
 	}
-	
-	public byte[] unpad(byte[] in, int block) {
-		int padding_resize = in[in.length-1]&0xff;
-		return Arrays.copyOf(in, in.length-padding_resize);
+
+	@Override public byte[] unpad(byte[] in, int block) {
+		return in; // not used and no way to tell what is padding or not
 	}
+
 }

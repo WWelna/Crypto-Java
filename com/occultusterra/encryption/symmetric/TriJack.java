@@ -26,6 +26,30 @@ public class TriJack implements CryptoHandler {
 	SkipJack j1, j2, j3;
 	
 	public TriJack(byte[] key) {
+		setKey(key);
+	}
+	
+	public TriJack() {
+		
+	}
+	
+	@Override public byte[] encrypt(byte[] block) {
+		return j3.encrypt(j2.decrypt(j1.encrypt(block)));
+	}
+	
+	@Override public byte[] decrypt(byte[] block) {
+		return j1.decrypt(j2.encrypt(j3.decrypt(block)));
+	}
+
+	@Override public int getBlockSize() {
+		return 8;
+	}
+
+	@Override public int getKeySize() {
+		return 30;
+	}
+
+	@Override public void setKey(byte[] key) {
 		byte[] k1 = new byte[10];
 		byte[] k2 = new byte[10];
 		byte[] k3 = new byte[10];
@@ -38,25 +62,15 @@ public class TriJack implements CryptoHandler {
 		j2 = new SkipJack(k2);
 		j3 = new SkipJack(k3);
 	}
-	
-	@Override
-	public byte[] encrypt(byte[] block) {
-		return j3.encrypt(j2.decrypt(j1.encrypt(block)));
-	}
-	
-	@Override
-	public byte[] decrypt(byte[] block) {
-		return j1.decrypt(j2.encrypt(j3.decrypt(block)));
+
+	@Override public void setBoxes(byte[][][] keybox) {
+		// Nothing Here
+		
 	}
 
-	@Override
-	public int getBlockSize() {
-		return 8;
-	}
-
-	@Override
-	public int getKeySize() {
-		return 30;
+	@Override public int[] getBoxSizes() {
+		int[] ret = {0,0,0};
+		return ret;
 	}
 
 }
