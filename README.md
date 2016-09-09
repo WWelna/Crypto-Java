@@ -5,6 +5,7 @@ Cryptological Things in Native Java of a lesser known variety. Heavily tweakable
 
 ### Ciphers
 * SkipJack
+* Skip32
 * TEA
 * XTEA
 * XXTEA
@@ -14,6 +15,9 @@ Cryptological Things in Native Java of a lesser known variety. Heavily tweakable
 * PKCS#7
 * Zero Pad
 * Util Debug Dumper
+* Data Validation Tests for ASCII
+* short, int, & long to Byte Array converters supporting Big and Little Endian reading
+* Byte Array to short, int, & long converters supporting Big and Little Endian writting
 
 ### Modes Of Operation
 * CBC
@@ -39,6 +43,18 @@ Cryptological Things in Native Java of a lesser known variety. Heavily tweakable
 ### Hash Functions
 * RipeMD160
 * Whirlpool
+* MD2
+* MD4
+* MD5
+* SHA-1
+* SHA-2
+* SHA-3
+* Tiger
+* scrypt()
+* bcrypt()
+* Microsoft LM Password Hash
+* Unix crypt() DES Hash
 
 ### Modes Of Operation
-* CTR
+* CTR (Big and Little Endian Counters)
+* Skip32-CTR
