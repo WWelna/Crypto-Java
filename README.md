@@ -11,6 +11,12 @@ Cryptological Things in Native Java of a lesser known variety. Heavily tweakable
 * XXTEA
 * GOST (NOT TESTED)
 
+## Classical Cryptology
+* Vigenere Cipher
+
+## Classical Cryptology Cracking & Cryptoanalysis
+* Frequency Counter
+
 ### Misc Things
 * PKCS#7
 * Zero Pad
@@ -36,6 +42,15 @@ Cryptological Things in Native Java of a lesser known variety. Heavily tweakable
 * RC4
 * DTD-1 / LUCIPHER
 * DES
+
+## Classical Cryptology
+* Playfair Cipher
+* Two-Square
+* Four-Square
+* Straddling Checkerboard
+
+## Classical Cryptology Cracking & Cryptoanalysis
+* Automated Vigenere Cipher Cracking
 
 ### Public Key Crypto
 * Merkle-Hellman knapsack cryptosystem
